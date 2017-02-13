@@ -2,6 +2,12 @@ from bottle import route, run, request
 import json
 import requests
 
+# for instagram post scraping
+from bs4 import BeautifulSoup
+from pandas.io.json import json_normalize
+import unicodedata
+import datetime
+
 @route('/hello')
 def index():
         return "hello"
@@ -18,8 +24,6 @@ def facebookWebHook():
 
 @route('/webhook', method=['POST'])
 def receiveMsgAndSendBackStuff():
-   print "inside POST webhook"
-   
    data = request.json
    if data["object"] == "page":
       for entry in data["entry"]:
@@ -28,7 +32,7 @@ def receiveMsgAndSendBackStuff():
                sender_id = messaging_event["sender"]["id"]   
                recipient_id = messaging_event["recipient"]["id"]
                message_text = messaging_event["message"]["text"]
-               send_message(sender_id, "got it, thanks!")
+               send_message(sender_id, getNumberOfInstaPosts(message_text))
    return "ok"
 
 def send_message(recipient_id, message_text):
@@ -51,6 +55,28 @@ def send_message(recipient_id, message_text):
     if r.status_code != 200:
         log(r.status_code)
         log(r.text)
+
+def getNumberOfInstaPosts(uid):
+    r = requests.get("https://www.instagram.com/"+uid)
+    c = r.content
+    soup = BeautifulSoup(c, "html.parser")
+    body = soup.find("body")
+    body = body.find("script", {"type":"text/javascript"}).text
+    body = unicodedata.normalize('NFKD', body).encode('ascii','ignore')
+    body_len = len(body)
+    body = body[21:body_len-1]
+    data = json.loads(body)
+    l = data["entry_data"]["ProfilePage"]
+    l = l.pop()
+    numberOfPosts = l["user"]["media"]["count"]
+    listOfPosts = l["user"]["media"]["nodes"]
+    try:
+        latestPost = listOfPosts[0]
+        unixTimestamp = latestPost["date"]
+        latestPostTime = datetime.datetime.fromtimestamp(unixTimestamp).strftime('%Y-%m-%d %H:%M:%S')
+    except:
+        latestPostTime = "N/A"
+    return "Number of Posts:"+str(numberOfPosts)+" Latest Post at:"+latestPostTime
 
 def log(message):  # simple wrapper for logging to stdout on heroku
     print str(message)

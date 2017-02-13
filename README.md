@@ -43,6 +43,11 @@
     </Directory>
 ```
 - sudo service apache2 restart
+- tail -200f /var/log/apache2/error.log
 
+### Installations of other modules (may not be used)
+- sudo apt-get update
+- sudo pip install pandas
+- sudo apt-get install python-bs4
 
 
