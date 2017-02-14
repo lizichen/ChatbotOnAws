@@ -8,6 +8,13 @@ from pandas.io.json import json_normalize
 import unicodedata
 import datetime
 
+import pymongo
+from bson.objectid import ObjectId
+#import socket
+#local_ip = socket.gethostbyname(socket.gethostname())
+CLIENT = pymongo.MongoClient()
+user_db = CLIENT.userDB
+
 @route('/hello')
 def index():
         return "hello"
@@ -43,6 +50,12 @@ def send_message(recipient_id, message_text):
     data = json.dumps({"recipient": {"id": recipient_id},
         "message": {"text": message_text}
     })
+
+    row = {'user': recipient_id, "message_text": message_text}
+    first_table = user_db['first_table']
+    first_table.save(row)
+    print 'grabbing after inserting:' , list(first_table.find({'user':recipient_id}))
+    
     r = requests.post("https://graph.facebook.com/v2.6/me/messages", params=params, headers=headers, data=data)
     if r.status_code != 200:
         log(r.status_code)
