@@ -55,7 +55,7 @@
               Allow from all
           </Directory>
       ```
-    + Restart Apache Web Server:   
+    + *Restart* Apache Web Server:   
       ```bash
         sudo service apache2 restart
       ```
@@ -64,52 +64,91 @@
         tail -200f /var/log/apache2/error.log
       ```
 
+### Configure Facebook Tokens:
+To set up webhook, use of PAGE_ACCESS_TOKEN etc. A Facebook Tutorial: [Link][fb-tutorial]
 
+### Receive Msg and Return Msg:
+
+```python
+#An input msg comes in:
+@route('/webhook', method=['POST'])
+def receiveMsgAndSendBackStuff():
+   data = request.json
+   if data["object"] == "page":
+      for entry in data["entry"]:
+         for messaging_event in entry["messaging"]:
+      if messaging_event.get("message"): 
+        sender_id = messaging_event["sender"]["id"]   
+        recipient_id = messaging_event["recipient"]["id"]
+        message_text = messaging_event["message"]["text"]
+        send_message(sender_id, message_text)
+
+#Reply an msg:
+def send_message(recipient_id, message_text):
+    params = {"access_token":page_access_token} #pre-set PAGE_ACCESS_TOKEN from the Facebook App Set-up page
+    headers = {"Content-Type": "application/json"} #it's a json obj
+    data = json.dumps({"recipient": {"id": recipient_id},
+        "message": {"text": "Hello!"} #reply with a string 'Hello!'
+    })
+    r = requests.post("https://graph.facebook.com/v2.6/me/messages", params=params, headers=headers, data=data)
+```
+
+### Integration of AI response:
+Visit: [http://www.customerserviceai.com][http://www.customerserviceai.com/]
+
+### Facebook APP Go Live:
+1. Create Mock Testers and Test Cases. (Under the Roles subpage in the FB App Dashboard)
+2. Create Submission and add example auto replies for the reviewers.
+3. Indicate which Mock Tester(s) can be used for the reviewers. (at the *App Verification Note* box)
+4. At the Dashboard Setting subpage, add **Privacy Policy URL** and **Terms of Service URL** for app review.
+5. Submit for Review!
 
 ### Install MongoDB and PyMongo
-- Import public key for Ubuntu Package Management System
+- Import *public key* for Ubuntu Package Management System   
   ```sh
     sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 0C49F3730359A14518585931BC711F9BA15703C6
   ```
-- Create a list file for MongoDB
+- Create a list file for MongoDB   
   ```sh
     echo "deb [ arch=amd64,arm64 ] http://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.4.list
   ```
-- Reload local package database
+- Reload local package database   
   ```sh
     sudo apt-get update
   ```
-- install the MongoDB packages
+- install the MongoDB packages   
   ```sh
     sudo apt-get install -y mongodb-org
   ```
-- Start MongoDB
+- Start MongoDB   
   ```sh
     sudo service mongod start
   ```
-- Verify MongoDB
+- Verify MongoDB   
   ```sh
     tail /var/log/mongodb/mongod.log
   ```
-- Port Config
+- Port Config   
   ```sh
     /etc/mongod.conf
   ```
-- Stop MongoDB
+- Stop MongoDB   
   ```sh
     sudo service mongod stop
   ```
-- Install PyMongo
+- Install PyMongo   
   ```sh
     sudo pip install pymongo
+  ```
+  <br />
+  ```  
     sudo pip install --upgrade pymongo
   ```
 
-### Installations of other modules (may not be used)
+### Installations of other modules, etc (may not be used)
 - sudo apt-get update
 - sudo pip install pandas
 - sudo apt-get install python-bs4
-
 
 [create-fb-page]:https://www.facebook.com/pages/create/
 [create-fb-app]:https://developers.facebook.com/apps
@@ -117,3 +156,5 @@
 [aws]:aws.amazon.com
 [certbot]:https://certbot.eff.org/#ubuntuxenial-apache
 [bottlepy]:bottlepy.org
+[fb-tutorial]: https://developers.facebook.com/docs/messenger-platform/guides/quick-start 
+[http://www.customerserviceai.com/]: http://www.customerserviceai.com/
