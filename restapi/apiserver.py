@@ -4,6 +4,11 @@ from bottle import route, run, request
 import json
 import requests
 
+AI_URL = 'https://dev.customerserviceai.com:9912/'
+fb_session = 'fb_sesoin'
+domain = 'cudeeplearning17' # llcao's class at Columbia
+
+
 #import socket
 #local_ip = socket.gethostbyname(socket.gethostname())
 
@@ -35,13 +40,30 @@ def receiveMsgAndSendBackStuff():
    if data["object"] == "page":
       for entry in data["entry"]:
          for messaging_event in entry["messaging"]:
-            if messaging_event.get("message"):  # someone sent us a message
-               sender_id = messaging_event["sender"]["id"]   
-               recipient_id = messaging_event["recipient"]["id"]
-               message_text = messaging_event["message"]["text"]
-               send_message(sender_id, getNumberOfInstaPosts(message_text))
-               #getInstaImages(sender_id, message_text)
+			if messaging_event.get("message"):  # someone sent us a message
+				sender_id = messaging_event["sender"]["id"]   
+				recipient_id = messaging_event["recipient"]["id"]
+				message_text = messaging_event["message"]["text"]
+				send_message(sender_id, answer_from_ai(message_text))
+                #send_message(sender_id, getNumberOfInstaPosts(message_text))
+                #getInstaImages(sender_id, message_text)
    return "ok"
+
+def answer_from_ai(message_text):
+    AI_response =  requests.post(AI_URL + 'top_faq_answers',
+                                     json={'domain': domain, 'question': message_text, 'sessionid': fb_session})
+    AI_response_dict = json.loads(AI_response.content)
+    if AI_response_dict['success']:
+        print 'successfully call AI!'
+        if 0:
+            print 'keys are:', AI_response_dict.keys()
+        
+        #print 'best answer:', AI_response_dict['answers'][0]
+        return AI_response_dict['answers'][0]
+		# print 'score=', AI_response_dict['scores'][0]
+        # print 'Is the best answer more confident than the threshold?', AI_response_dict['scores'][0] > AI_response_dict['thresh']
+    else:
+        print 'failed to call AI, err_msg=', AI_response_dict['err_msg']    
 
 def send_message(recipient_id, message_text):
     print str("sending message to {recipient}: {text}".format(recipient=recipient_id, text=message_text))
