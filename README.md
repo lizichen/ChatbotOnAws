@@ -1,4 +1,4 @@
-# Deploy Facebook Chatbot Messenger on an Amazon AWS Instance
+# Deploy Facebook Chatbot Messenger
 
 ### Groundwork 
 - Create [Facebook Page][create-fb-page] and [Facebook App][create-fb-app]
@@ -102,6 +102,13 @@ Visit: [http://www.customerserviceai.com][http://www.customerserviceai.com/]
 3. Indicate which Mock Tester(s) can be used for the reviewers. (at the *App Verification Note* box)
 4. At the Dashboard Setting subpage, add **Privacy Policy URL** and **Terms of Service URL** for app review.
 5. Submit for Review!
+
+# Deploy Twitter Auto-Tweet Bot 
+Tutorial: https://medium.com/science-friday-footnotes/how-to-make-a-twitter-bot-in-under-an-hour-259597558acf#.9ci0wdqzj 
+
+# Deploy Twitter Direct-Messager Chatbot
+Under beta private testing
+
 
 ### Install MongoDB and PyMongo
 - Import *public key* for Ubuntu Package Management System   
