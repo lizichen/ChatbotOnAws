@@ -16,6 +16,7 @@ Under beta private testing
 ## Amazon Alexa
 
 ## Slack Integration
+https://github.com/lizichen/ChatbotOnAws/tree/master/slackbot
 
 ## Microsoft Cortana
 
