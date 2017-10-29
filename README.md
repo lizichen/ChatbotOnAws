@@ -1,5 +1,6 @@
-# Deploy A List of Chatbots with Integration of AI Engines
-**without using Heroku**  
+# Deploy A List of Chat-bots with Integration of AI Engines for HelloVera.ai
+
+This is a test repo for the deployment of all chat-bot platforms that HelloVera's proprietary AI Engines will be connected with.
 
 ## Facebook Messenger
 https://github.com/lizichen/ChatbotOnAws/tree/master/restapi
