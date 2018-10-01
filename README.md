@@ -6,6 +6,8 @@ Technical Stacks:
 - Bottlepy: https://bottlepy.org/docs/dev/
 - Bootstrap: http://getbootstrap.com/ 
 - AWS: https://aws.amazon.com/
+- MongoDB: https://api.mongodb.com/python/current/
+- BeautifulSoup: https://www.crummy.com/software/BeautifulSoup/
 
 ## Chatbot Platforms:
 ### Facebook Messenger
